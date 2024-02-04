@@ -61,7 +61,8 @@ class GroupsController extends Controller
                         'i.ID',
                         'i.NameAr',
                         'i.OrderNo',
-                        'ItemGroupID'
+                        'ItemGroupID',
+                        DB::raw('CAST(i.Price AS FLOAT) as SalesPrice')
                     )->whereNull('i.Barcode')
                     ->where('i.IsActive', 1)
                     ->where('ItemGroupID',$groupId)
