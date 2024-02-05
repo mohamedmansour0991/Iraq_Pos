@@ -62,9 +62,11 @@ class GroupsController extends Controller
                         'i.NameAr',
                         'i.OrderNo',
                         'ItemGroupID',
+                        'Barcode',
                         DB::raw('CAST(i.Price AS FLOAT) as SalesPrice')
-                    )->whereNull('i.Barcode')
+                    )
                     ->where('i.IsActive', 1)
+                    ->whereNull('i.Barcode')
                     ->where('ItemGroupID',$groupId)
                     // ->where('i.IsShow', '<>', 0)
                     // ->whereNull('i.allaw_lab')
@@ -96,4 +98,26 @@ class GroupsController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
+    public function searchBarcode(Request $request)
+{
+    try {
+        $barcode = $request->input('barcode');
+
+        $itemsQuery = DB::table('SC_Items as u')
+            ->join('SC_MeasurementUnits as s', 'u.UnitID', '=', 's.ID')
+            ->where('u.Barcode', $barcode) // Change the condition to search by barcode
+            ->select('u.ID', 'u.NameAr', 's.NameAr as UnitName', DB::raw('1 as UnitConvert'), 's.ID as UnitID', DB::raw('CAST(u.Price AS FLOAT) as SalesPrice'));
+
+        $results = $itemsQuery->get();
+
+        return response()->json(['data' => $results]);
+    } catch (\Exception $e) {
+        // Handle exceptions and return an error response
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
     }

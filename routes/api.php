@@ -28,6 +28,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/get-users', [UsersController::class, 'getPersons']);
 Route::get('/get-groups', [GroupsController::class, 'groups']);
 Route::get('/get-items', [GroupsController::class, 'items']);
+Route::get('/get-items-barcode', [GroupsController::class, 'searchBarcode']);
+
+
 Route::get('/get-items-details', [GroupsController::class, 'getItemPrices']);
 
 
