@@ -4,6 +4,7 @@ use App\Http\Controllers\pos\BoxsController;
 use App\Http\Controllers\pos\DelegateSalesController;
 use App\Http\Controllers\pos\GroupsController;
 use App\Http\Controllers\pos\PaymentMethodController;
+use App\Http\Controllers\pos\SaveDataController;
 use App\Http\Controllers\pos\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,15 +27,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Users 
 Route::get('/get-users', [UsersController::class, 'getPersons']);
-Route::get('/get-groups', [GroupsController::class, 'groups']);
-Route::get('/get-items', [GroupsController::class, 'items']);
-Route::get('/get-items-barcode', [GroupsController::class, 'searchBarcode']);
-Route::get('/get-items-name', [GroupsController::class, 'searchByNameAr']);
+
+Route::controller(GroupsController::class)->group(function () {
+    Route::get('/get-groups',  'groups');
+    Route::get('/get-items',  'items');
+    Route::get('/get-items-barcode',  'searchBarcode');
+    Route::get('/get-items-name',  'searchByNameAr');
+    Route::get('/get-items-details', 'getItemPrices');
+});
 
 
+Route::post('/data-save', [SaveDataController::class, 'save']);
 
 
-Route::get('/get-items-details', [GroupsController::class, 'getItemPrices']);
 
 
 Route::get('/get-delegate-sales', [DelegateSalesController::class, 'delegateSales']);
@@ -42,8 +47,3 @@ Route::get('/get-delegate-sales', [DelegateSalesController::class, 'delegateSale
 
 Route::get('/get-payment', [PaymentMethodController::class, 'payment']);
 Route::get('/get-box', [BoxsController::class, 'getBox']);
-
-
-
-
-

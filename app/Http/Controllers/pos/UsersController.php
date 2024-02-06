@@ -13,8 +13,8 @@ class UsersController extends Controller
         $persons = DB::table('Main_Persons AS p')
             ->select('p.*')
             ->leftJoin('Main_UsersCustomers AS uc', 'uc.CustomerID', '=', 'p.ID')
-            ->where('p.PersonTypeID',4)
-            ->orWhere('p.PersonTypeID',8)
+            ->where('p.PersonTypeID',1)
+            // ->orWhere('p.PersonTypeID',8)
             ->get();
         return response()->json($persons);
     }
