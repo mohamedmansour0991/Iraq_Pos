@@ -11,7 +11,7 @@ class UsersController extends Controller
     public function getPersons()
     {
         $persons = DB::table('Main_Persons AS p')
-            ->select('p.*')
+            ->select('p.ID','NameAr')
             ->leftJoin('Main_UsersCustomers AS uc', 'uc.CustomerID', '=', 'p.ID')
             ->where('p.PersonTypeID',1)
             // ->orWhere('p.PersonTypeID',8)

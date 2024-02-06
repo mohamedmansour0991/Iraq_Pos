@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // Users 
-Route::get('/get-users', [UsersController::class, 'getPersons']);
+Route::get('/get-customer', [UsersController::class, 'getPersons']);
 
 Route::controller(GroupsController::class)->group(function () {
     Route::get('/get-groups',  'groups');
