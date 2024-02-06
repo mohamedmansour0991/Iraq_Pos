@@ -9,9 +9,50 @@ use Carbon\Carbon;
 
 class SaveDataController extends Controller
 {
+    // public function save(Request $request)
+    // {
+    //     try {
+    //         $latestInvoice = DB::table('AR_SalesInvoice_Main')
+    //             ->select('InvoiceNo')
+    //             ->orderBy('InvoiceNo', 'desc')
+    //             ->first();
+
+    //         if ($latestInvoice) {
+    //             $InvoiceNo = (int)$latestInvoice->InvoiceNo;
+    //         } else {
+    //         }
+    //         $MainID = DB::table('AR_SalesInvoice_Main')
+    //             ->select('id')
+    //             ->orderBy('InvoiceNo', 'desc')
+    //             ->pluck('id')
+    //             ->first();
+    //         // $result = DB::table('AR_SalesInvoice_Details')
+    //         // ->select(DB::raw('CASE WHEN ItemPropertyID > 0 THEN ItemPropertyID ELSE NULL END AS modifiedItemPropertyID'))
+    //         // ->first();
+    //         // return $result ;
+
+
+    //         $data2 = [
+    //             'ItemID' => $request->input('ItemID'),
+    //             'Price' => $request->input('Price'),
+    //             'Quantity' => $request->input('Quantity'),
+    //             'MainID' => $MainID ,
+    //             'Total' => $request->input('Price') * $request->input('Quantity'),
+    //             'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
+
+    //         ];
+    //         DB::table('AR_SalesInvoice_Main')->insert($data);
+    //         DB::table('AR_SalesInvoice_Details')->insert($data2);
+
+    //         return response()->json(['massage' => 'Data Save Succeful']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
     public function save(Request $request)
     {
         try {
+            // Retrieve the MainID associated with the latest invoice
             $latestInvoice = DB::table('AR_SalesInvoice_Main')
                 ->select('InvoiceNo')
                 ->orderBy('InvoiceNo', 'desc')
@@ -21,15 +62,31 @@ class SaveDataController extends Controller
                 $InvoiceNo = (int)$latestInvoice->InvoiceNo;
             } else {
             }
-            $MainID = DB::table('AR_SalesInvoice_Main')
+        
+
+            $itemIDs = $request->input('ItemID');
+            $prices = $request->input('Price');
+            $quantities = $request->input('Quantity');
+
+            $data2 = [];
+
+            foreach ($itemIDs as $index => $itemID) {
+                $total = $prices[$index] * $quantities[$index];
+                $totalAfterDiscount = $total;
+                $MainID = DB::table('AR_SalesInvoice_Main')
                 ->select('id')
                 ->orderBy('InvoiceNo', 'desc')
                 ->pluck('id')
                 ->first();
-            // $result = DB::table('AR_SalesInvoice_Details')
-            // ->select(DB::raw('CASE WHEN ItemPropertyID > 0 THEN ItemPropertyID ELSE NULL END AS modifiedItemPropertyID'))
-            // ->first();
-            // return $result ;
+                $data2[] = [
+                    'ItemID' => $itemID,
+                    'Price' => $prices[$index],
+                    'Quantity' => $quantities[$index],
+                    'MainID' => $MainID,
+                    'Total' => $total,
+                    'TotalAfterDiscount' => $totalAfterDiscount,
+                ];
+            }
 
             $data = [
                 'PaymentTypeID' => $request->input('PaymentTypeID'),
@@ -46,19 +103,10 @@ class SaveDataController extends Controller
                 'paid' => $request->input('paid'),
                 'Residual' => $request->input('Residual'),
             ];
-            $data2 = [
-                'ItemID' => $request->input('ItemID'),
-                'Price' => $request->input('Price'),
-                'Quantity' => $request->input('Quantity'),
-                'MainID' => $MainID ,
-                'Total' => $request->input('Price') * $request->input('Quantity'),
-                'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
-
-            ];
-            DB::table('AR_SalesInvoice_Main')->insert($data);
             DB::table('AR_SalesInvoice_Details')->insert($data2);
+            DB::table('AR_SalesInvoice_Main')->insert($data);
 
-            return response()->json(['massage' => 'Data Save Succeful']);
+            return response()->json(['message' => 'Data Save Success']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
