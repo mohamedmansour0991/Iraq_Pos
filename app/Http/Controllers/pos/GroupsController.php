@@ -86,7 +86,7 @@ class GroupsController extends Controller
             $itemsQuery = DB::table('SC_Items as u')
                 ->join('SC_MeasurementUnits as s', 'u.UnitID', '=', 's.ID')
                 ->where('u.ID', $itemID)
-                ->select('s.NameAr', DB::raw('1 as UnitConvert'), 's.ID', DB::raw('CAST(u.Price AS FLOAT) as SalesPrice'));
+                ->select('s.NameAr', DB::raw('1 as UnitConvert'), 'u.ID', DB::raw('CAST(u.Price AS FLOAT) as SalesPrice'));
 
             $results = $itemsQuery->get();
 

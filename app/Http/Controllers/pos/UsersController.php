@@ -18,4 +18,14 @@ class UsersController extends Controller
             ->get();
         return response()->json($persons);
     }
+
+
+    public function getUsersWithBranches()
+    {
+        $users = DB::table('Main_Users')->select('Main_Users.ID', 'UserName', 'Password', 'BranchID')
+            ->join('Main_UsersOfBranches', 'Main_Users.ID', '=', 'Main_UsersOfBranches.UserID')
+            ->get();
+
+        return response()->json($users);
+    }
 }

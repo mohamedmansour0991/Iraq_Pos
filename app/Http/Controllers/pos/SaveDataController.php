@@ -53,7 +53,7 @@ class SaveDataController extends Controller
                 'MainID' => $MainID ,
                 'Total' => $request->input('Price') * $request->input('Quantity'),
                 'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
-                // 'ExpirationDate' => ,
+
             ];
             DB::table('AR_SalesInvoice_Main')->insert($data);
             DB::table('AR_SalesInvoice_Details')->insert($data2);

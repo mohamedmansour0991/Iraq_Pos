@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\pos\BoxsController;
-use App\Http\Controllers\pos\DelegateSalesController;
-use App\Http\Controllers\pos\GroupsController;
-use App\Http\Controllers\pos\PaymentMethodController;
-use App\Http\Controllers\pos\SaveDataController;
-use App\Http\Controllers\pos\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\pos\BoxsController;
+use App\Http\Controllers\pos\UsersController;
+use App\Http\Controllers\pos\GroupsController;
+use App\Http\Controllers\pos\SaveDataController;
+use App\Http\Controllers\pos\DelegateSalesController;
+use App\Http\Controllers\pos\PaymentMethodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +20,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/login', [AuthController::class, 'login']);
+// Route::middleware('auth:sanctum')->get(function (Request $request) {
+// });
 
 
 // Users 
 Route::get('/get-customer', [UsersController::class, 'getPersons']);
+Route::get('/get-users', [UsersController::class, 'getUsersWithBranches']);
 
 Route::controller(GroupsController::class)->group(function () {
     Route::get('/get-groups',  'groups');
