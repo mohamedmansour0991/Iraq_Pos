@@ -46,19 +46,23 @@ class SaveDataController extends Controller
     {
         try {
             $latestMainID = DB::table('AR_SalesInvoice_Main')
-                ->select('id')
-                ->orderBy('InvoiceNo', 'desc')
-                ->pluck('id')
+                ->select('ID')
+                ->orderBy('ID', 'desc')
                 ->first();
-                return $latestMainID ; 
-                $data2 = [
-                    'ItemID' => $request->input('ItemID'),
-                    'Price' => $request->input('Price'),
-                    'Quantity' => $request->input('Quantity'),
-                    'MainID' => $latestMainID,
-                    'Total' =>$request->input('Price') * $request->input('Quantity') ,
-                    'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity') ,
-                ];
+            if ($latestMainID) {
+                $MainID = (int)$latestMainID->ID;
+            } else {
+            }
+
+            return $MainID ;
+            $data2 = [
+                'ItemID' => $request->input('ItemID'),
+                'Price' => $request->input('Price'),
+                'Quantity' => $request->input('Quantity'),
+                'MainID' => $latestMainID,
+                'Total' => $request->input('Price') * $request->input('Quantity'),
+                'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
+            ];
             DB::table('AR_SalesInvoice_Details')->insert($data2);
             return response()->json(['message' => 'Data saved successfully']);
         } catch (\Exception $e) {
