@@ -50,6 +50,7 @@ class SaveDataController extends Controller
                 ->orderBy('InvoiceNo', 'desc')
                 ->pluck('id')
                 ->first();
+                return $latestMainID ; 
                 $data2 = [
                     'ItemID' => $request->input('ItemID'),
                     'Price' => $request->input('Price'),
