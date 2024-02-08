@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class SaveDataController extends Controller
 {
-    public function save2(Request $request)
+    public function save(Request $request)
     {
         try {
             $latestInvoice = DB::table('AR_SalesInvoice_Main')
@@ -42,7 +42,7 @@ class SaveDataController extends Controller
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
-    public function save(Request $request)
+    public function save2(Request $request)
     {
         try {
             $itemIDs = $request->input('ItemID');

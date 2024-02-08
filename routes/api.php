@@ -39,6 +39,7 @@ Route::controller(GroupsController::class)->group(function () {
 
 
 Route::post('/data-save', [SaveDataController::class, 'save']);
+Route::post('/order-save', [SaveDataController::class, 'save2']);
 
 
 
