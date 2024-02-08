@@ -54,12 +54,11 @@ class SaveDataController extends Controller
             } else {
             }
 
-            return $MainID ;
             $data2 = [
                 'ItemID' => $request->input('ItemID'),
                 'Price' => $request->input('Price'),
                 'Quantity' => $request->input('Quantity'),
-                'MainID' => $latestMainID,
+                'MainID' => $MainID,
                 'Total' => $request->input('Price') * $request->input('Quantity'),
                 'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
             ];
