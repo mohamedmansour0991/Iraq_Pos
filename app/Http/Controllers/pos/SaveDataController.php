@@ -21,12 +21,7 @@ class SaveDataController extends Controller
                 $InvoiceNo = (int)$latestInvoice->InvoiceNo;
             } else {
             }
-            $MainID = DB::table('AR_SalesInvoice_Main')
-                ->select('id')
-                ->orderBy('InvoiceNo', 'desc')
-                ->pluck('id')
-                ->first();
-
+        
 
 
             $data = [
