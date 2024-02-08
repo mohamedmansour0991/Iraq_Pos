@@ -45,6 +45,14 @@ class SaveDataController extends Controller
     public function save2(Request $request)
     {
         try {
+
+
+            $itemIDs = $request->input('ItemID');
+            $prices = $request->input('Price');
+            $quantities = $request->input('Quantity');
+
+            $data2 = [];
+
             $latestMainID = DB::table('AR_SalesInvoice_Main')
                 ->select('ID')
                 ->orderBy('ID', 'desc')
@@ -53,15 +61,19 @@ class SaveDataController extends Controller
                 $MainID = (int)$latestMainID->ID;
             } else {
             }
+            foreach ($itemIDs as $index => $itemID) {
+                $total = $prices[$index] * $quantities[$index];
+                $totalAfterDiscount = $total;
 
-            $data2 = [
-                'ItemID' => $request->input('ItemID'),
-                'Price' => $request->input('Price'),
-                'Quantity' => $request->input('Quantity'),
-                'MainID' => $MainID,
-                'Total' => $request->input('Price') * $request->input('Quantity'),
-                'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity'),
-            ];
+                $data2[] = [
+                    'ItemID' => $itemID,
+                    'Price' => $prices[$index],
+                    'Quantity' => $quantities[$index],
+                    'MainID' => $MainID,
+                    'Total' => $total,
+                    'TotalAfterDiscount' => $totalAfterDiscount,
+                ];
+            }
             DB::table('AR_SalesInvoice_Details')->insert($data2);
             return response()->json(['message' => 'Data saved successfully']);
         } catch (\Exception $e) {
