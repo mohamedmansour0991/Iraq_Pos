@@ -45,45 +45,22 @@ class SaveDataController extends Controller
     public function save2(Request $request)
     {
         try {
-            $itemIDs = $request->input('ItemID');
-            $prices = $request->input('Price');
-            $quantities = $request->input('Quantity');
-    
-            $data2 = [];
-    
-            // Fetch the latest MainID outside the loop
             $latestMainID = DB::table('AR_SalesInvoice_Main')
                 ->select('id')
                 ->orderBy('InvoiceNo', 'desc')
                 ->pluck('id')
                 ->first();
-    
-            foreach ($itemIDs as $index => $itemID) {
-                $total = $prices[$index] * $quantities[$index];
-                $totalAfterDiscount = $total;
-    
-                $data2[] = [
-                    'ItemID' => $itemID,
-                    'Price' => $prices[$index],
-                    'Quantity' => $quantities[$index],
+                $data2 = [
+                    'ItemID' => $request->input('ItemID'),
+                    'Price' => $request->input('Price'),
+                    'Quantity' => $request->input('Quantity'),
                     'MainID' => $latestMainID,
-                    'Total' => $total,
-                    'TotalAfterDiscount' => $totalAfterDiscount,
+                    'Total' =>$request->input('Price') * $request->input('Quantity') ,
+                    'TotalAfterDiscount' => $request->input('Price') * $request->input('Quantity') ,
                 ];
-            }
-    
-            // Start a database transaction
-            DB::beginTransaction();
-    
-            // Insert data into the database
             DB::table('AR_SalesInvoice_Details')->insert($data2);
-    
-            // Commit the transaction
-            DB::commit();
-    
             return response()->json(['message' => 'Data saved successfully']);
         } catch (\Exception $e) {
-            // Rollback the transaction if an exception occurs
             DB::rollBack();
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
