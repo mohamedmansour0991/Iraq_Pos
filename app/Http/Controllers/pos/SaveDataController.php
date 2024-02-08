@@ -48,32 +48,43 @@ class SaveDataController extends Controller
             $itemIDs = $request->input('ItemID');
             $prices = $request->input('Price');
             $quantities = $request->input('Quantity');
-
+    
             $data2 = [];
-
-            foreach ($itemIDs as $index => $itemID) {
-                $total = $prices[$index] * $quantities[$index];
-                $totalAfterDiscount = $total;
-                $MainID = DB::table('AR_SalesInvoice_Main')
+    
+            // Fetch the latest MainID outside the loop
+            $latestMainID = DB::table('AR_SalesInvoice_Main')
                 ->select('id')
                 ->orderBy('InvoiceNo', 'desc')
                 ->pluck('id')
                 ->first();
+    
+            foreach ($itemIDs as $index => $itemID) {
+                $total = $prices[$index] * $quantities[$index];
+                $totalAfterDiscount = $total;
+    
                 $data2[] = [
                     'ItemID' => $itemID,
                     'Price' => $prices[$index],
                     'Quantity' => $quantities[$index],
-                    'MainID' => $MainID,
+                    'MainID' => $latestMainID,
                     'Total' => $total,
                     'TotalAfterDiscount' => $totalAfterDiscount,
                 ];
             }
-
-
+    
+            // Start a database transaction
+            DB::beginTransaction();
+    
+            // Insert data into the database
             DB::table('AR_SalesInvoice_Details')->insert($data2);
-
-            return response()->json(['message' => 'Data Save Success']);
+    
+            // Commit the transaction
+            DB::commit();
+    
+            return response()->json(['message' => 'Data saved successfully']);
         } catch (\Exception $e) {
+            // Rollback the transaction if an exception occurs
+            DB::rollBack();
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
