@@ -35,17 +35,6 @@ class SaveDataController extends Controller
                 'paid' => $request->input('paid'),
                 'Residual' => $request->input('Residual'),
             ];
-            DB::table('AR_SalesInvoice_Main')->insert($data);
-
-            return response()->json(['massage' => 'Data Save Succeful']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
-        }
-    }
-    public function save2(Request $request)
-    {
-        try {
-
 
             $itemIDs = $request->input('ItemID');
             $prices = $request->input('Price');
@@ -75,10 +64,50 @@ class SaveDataController extends Controller
                 ];
             }
             DB::table('AR_SalesInvoice_Details')->insert($data2);
-            return response()->json(['message' => 'Data saved successfully']);
+            DB::table('AR_SalesInvoice_Main')->insert($data);
+
+            return response()->json(['massage' => 'Data Save Succeful']);
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }
     }
+    // public function save2(Request $request)
+    // {
+    //     try {
+
+
+    //         $itemIDs = $request->input('ItemID');
+    //         $prices = $request->input('Price');
+    //         $quantities = $request->input('Quantity');
+
+    //         $data2 = [];
+
+    //         $latestMainID = DB::table('AR_SalesInvoice_Main')
+    //             ->select('ID')
+    //             ->orderBy('ID', 'desc')
+    //             ->first();
+    //         if ($latestMainID) {
+    //             $MainID = (int)$latestMainID->ID;
+    //         } else {
+    //         }
+    //         foreach ($itemIDs as $index => $itemID) {
+    //             $total = $prices[$index] * $quantities[$index];
+    //             $totalAfterDiscount = $total;
+
+    //             $data2[] = [
+    //                 'ItemID' => $itemID,
+    //                 'Price' => $prices[$index],
+    //                 'Quantity' => $quantities[$index],
+    //                 'MainID' => $MainID,
+    //                 'Total' => $total,
+    //                 'TotalAfterDiscount' => $totalAfterDiscount,
+    //             ];
+    //         }
+    //         DB::table('AR_SalesInvoice_Details')->insert($data2);
+    //         return response()->json(['message' => 'Data saved successfully']);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
 }
